@@ -50,5 +50,5 @@ def gen_L_Band():
 #etc...
 
 #Save output in file
-with open('C:\\Users\\Lab\\Documents\\Simulator\\output_data.bin','wb') as file:
+with open('output_data.bin','wb') as file:
     file.write(gen_AIS())

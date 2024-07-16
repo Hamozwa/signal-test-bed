@@ -169,7 +169,7 @@ class AIS_Tx(gr.top_block, Qt.QWidget):
             do_unpack=True)
         self.blocks_throttle2_0 = blocks.throttle( gr.sizeof_char*1, samp_rate, True, 0 if "auto" == "auto" else max( int(float(0.1) * samp_rate) if "auto" == "time" else int(0.1), 1) )
         self.blocks_multiply_const_xx_0 = blocks.multiply_const_cc(0.9, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, 'C:\\Users\\Lab\\Documents\\Simulator\\output_data.bin', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '.\\output_data.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
