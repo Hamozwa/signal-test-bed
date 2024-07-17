@@ -64,7 +64,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: ./input_data.bin
+    file: ../input_data.bin
     type: byte
     unbuffered: 'False'
     vlen: '1'
