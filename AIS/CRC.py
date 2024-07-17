@@ -1,5 +1,5 @@
 #CRC.py
-#Supply functions necessary to apply CRC 16 Checksum
+#Module supplying functions necessary to apply CRC 16 Checksum
 #According to ISO/IEC 13239:2002 Section 4.2.5.2 16-bit FCS
 
 #====================================== BACKGROUND FUNCTIONS =======================================
@@ -27,6 +27,26 @@ def to_binary_AIS(data):
         binary_value = format(six_bit_value, '06b')
         output += binary_value
 
+    return output
+
+#Convert binary back to data assuming six-bit ASCII
+def from_binary_AIS(data):
+
+    output = ''
+
+    #Cycles through each 6 bit grouping
+    for i in range(0, len(data), 6):
+
+        #Convert 6 bit grouping into 6 bit value
+        six_bit_value = int(data[i:i+6], 2)
+
+        #Convert 6 bit value into appropriate ASCII value
+        if six_bit_value >= 32:
+            six_bit_value += 8
+        ascii_value = six_bit_value + 48
+
+        output += chr(ascii_value)
+        
     return output
 
 def binary_string_to_bytes(binary_string):

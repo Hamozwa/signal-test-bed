@@ -13,9 +13,10 @@ def read_AIS(message):
         raise ValueError("Checksum invalid.")
     
     #Process Payload
-    #payload = 
+    payload = from_binary_AIS(data_and_checksum[0:168])
+    msg = pyais.decode(b"!AIVDM,1,1,,A,"+str.encode(payload)+b",0*4E")
 
-    return data_and_checksum
+    return msg
 
 #Read output from file
 with open('input_data.bin','rb') as file:
