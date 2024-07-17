@@ -1,5 +1,5 @@
 import pyais
-from CRC import *
+from AIS.CRC import *
 
 def read_AIS(message):
     

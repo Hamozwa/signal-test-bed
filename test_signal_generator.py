@@ -2,7 +2,7 @@
 #Generates a test signal and saves to a .bin file
 
 import pyais
-from CRC import *
+from AIS.CRC import *
 
 
 def gen_AIS():
