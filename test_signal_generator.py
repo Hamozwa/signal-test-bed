@@ -50,5 +50,5 @@ def gen_L_Band():
 #etc...
 
 #Save output in file
-with open('output_data.bin','wb') as file:
-    file.write(gen_AIS())
+with open('output_data.bin','wb') as bin_file:
+    bin_file.write(gen_AIS())

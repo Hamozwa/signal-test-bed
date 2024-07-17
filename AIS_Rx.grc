@@ -64,7 +64,7 @@ blocks:
     alias: ''
     append: 'False'
     comment: ''
-    file: ./output.bin
+    file: ./input_data.bin
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -72,7 +72,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1120, 300.0]
+    coordinate: [1088, 300.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_const_xx_0

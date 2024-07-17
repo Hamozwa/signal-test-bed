@@ -115,7 +115,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [344, 192.0]
+    coordinate: [320, 192.0]
     rotation: 0
     state: enabled
 - name: digital_gmsk_demod_0
@@ -157,7 +157,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 192.0]
+    coordinate: [544, 192.0]
     rotation: 0
     state: enabled
 - name: osmosdr_sink_0
