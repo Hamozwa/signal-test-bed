@@ -1,38 +1,36 @@
 #test_signal_generator.py
 #Generates a test signal and saves to a .bin file
 
+#=========================================== IMPORTS ============================================
 import pyais
 from AIS.CRC import create_checksum, check_checksum, to_binary_AIS, binary_string_to_bytes
-import message_info
+from message_info import AIS_message_info
 
-def gen_AIS():
+#==================================== GENERATION FUNCTIONS =======================================
 
-def gen_AIS(msg_type, msg_object):
+def gen_AIS(msg_info):
 
     #Use pyais to make NMEA 0183 Message depending on message type
-    match msg_type:
+    match msg_info['msg_type']:
         case 1:
             payload = pyais.messages.MessageType1.create(
-                msg_type = 1,
-                repeat = 0,
-                mmsi="111111111",
-                status = 0,
-                turn = 0,
-                speed = 0,
-                accuracy = 0,
-                lon = 0,
-                lat = 34,
-                course = 0,
-                heading = 0,
-                second = 0,
-                maneuver = 0,
-                spare_1 = b'',
-                raim = 0,
-                radio = 0
+                msg_type = msg_info['msg_type'],
+                repeat = msg_info['repeat'],
+                mmsi=msg_info['mmsi'],
+                status = msg_info['status'],
+                turn = msg_info['turn'],
+                speed = msg_info['speed'],
+                accuracy = msg_info['accuracy'],
+                lon = msg_info['lon'],
+                lat = msg_info['lat'],
+                course = msg_info['course'],
+                heading = msg_info['heading'],
+                second = msg_info['second'],
+                maneuver = msg_info['maneuver'],
+                spare_1 = msg_info['spare_1'],
+                raim = msg_info['raim'],
+                radio = msg_info['radio']
             )
-            print(payload)
-            payload.radio = 1
-            print
         case 2:
             pass
         case 3:
@@ -107,6 +105,9 @@ def gen_L_Band():
 
 #etc...
 
-#Save output in file
-with open('output_data.bin','wb') as bin_file:
-    bin_file.write(gen_AIS(1, []))
+#======================================= UNIT TESTING ===========================================
+
+if __name__ == "__main__":
+    #Save output in file
+    with open('output_data.bin','wb') as bin_file:
+        bin_file.write(gen_AIS(AIS_message_info))

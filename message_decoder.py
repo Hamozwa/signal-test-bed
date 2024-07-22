@@ -1,5 +1,12 @@
+#message_decoder
+#Reads signal from a file
+
+#=========================================== IMPORTS ============================================
+
 import pyais
 from AIS.CRC import bytes_to_binary_string, check_checksum, from_binary_AIS
+
+#======================================= READING FUNCTIONS=======================================
 
 def read_AIS(message):
     
@@ -18,6 +25,9 @@ def read_AIS(message):
 
     return msg
 
-#Read output from file
-with open('input_data.bin','rb') as file:
-    print(read_AIS(file.read()))
+#========================================== UNIT TESTING ========================================
+
+if __name__ == "__main__":
+    #Read output from file
+    with open('input_data.bin','rb') as file:
+        print(read_AIS(file.read()))

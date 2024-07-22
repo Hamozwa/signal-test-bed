@@ -3,7 +3,7 @@
 
 AIS_message_info = {
     'msg_type' : 1,
-    'mmsi' : '',
+    'mmsi' : '11111111',
     
     #No repeated variables
     #1
@@ -85,8 +85,36 @@ AIS_message_info = {
     'band' : 0,
     'msg22' : 0,
     #20
+    'offset1' : 0,
     'number1' : 0,
     'timeout1' : 0,
-    
+    'offset2' : 0,
+    'number2' : 0,
+    'timeout2' : 0,
+    'offset3' : 0,
+    'number3' : 0,
+    'timeout3' : 0,
+    'increment3' : 0,
+    'offset4' : 0,
+    'number4' : 0,
+    'timeout4' : 0,
+    'increment4' : 0,
+    #21
+    'aid_type' : 0,
+    'name' : 0,
+    'off_position' : 0,
+    'virtual_aid' : 0,
+    'name_ext' : '',
+    #23
+    'ne_lon' : 0,
+    'ne_lat' : 0,
+    'sw_lon' : 0,
+    'sw_lat' : 0,
+    'station_type' : 0,
+    'txrx' : 0,
+    'interval' : 0,
+    'quiet' : 0,
+    #27
+    'gnss' : 0
 
 }
