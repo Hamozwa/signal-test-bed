@@ -1,5 +1,5 @@
 import pyais
-from AIS.CRC import *
+from AIS.CRC import bytes_to_binary_string, check_checksum, from_binary_AIS
 
 def read_AIS(message):
     
@@ -9,7 +9,7 @@ def read_AIS(message):
     data_and_checksum = message_binary[ start_flag_index + 8 : start_flag_index + 192 ]
 
     #Check Checksum
-    if alternate_checksum(data_and_checksum) != '':
+    if not check_checksum(data_and_checksum):
         raise ValueError("Checksum invalid.")
     
     #Process Payload

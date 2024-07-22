@@ -112,42 +112,37 @@ def mod_2_div(num,den):
         rem = xor(rem, den).lstrip('0')
     return rem
 
+#xors with binary string of 1s
+def ones_complement(data):
+    return(xor(data, '1'*len(data)))
+
 #=================================== ISO/IEC 13239:2002 STANDARD ====================================
+# (In particular, the method outlined in Annex A)
 
-#Create checksum using modulo 2 division and modulo 2 summation (xor)
-def find_checksum(data):
+def create_checksum(data):
     
-    data_length = len(data)
-
-    #Create a and b as according to above quoted section
-    a = mod_2_div(('1111111111111111'+ ('0'*(data_length))),'10001000000100001')
-    b = mod_2_div(data + ('0' * 16),'10001000000100001')
-
-    #Prepend any necessary 0s and xor (modulo 2 sum)
-    while len(a) > len(b):
-        b = '0' + b
-    while len(b) > len(a):
-        a = '0' + a
-    summed = xor(a,b)
-
-    #Return ones complement
-    return binary_string_to_bytes(xor(summed,('1'*len(summed))))
+    k = len(data)
+    data = data + '0000000000000000'
+    data = xor(data, '1111111111111111'+('0'*k))
+    sol = mod_2_div(data, '10001000000100001')
+    while len(sol) < 16:
+        sol = '0' + sol
+    return ones_complement(sol)
 
 def check_checksum(data):
-
-    return mod_2_div(data + ('0' * 16),'10001000000100001')
-
-#===================================== ALTERNATE CHECKSUM METHOD =====================================
-
-#Creates Checksum accroding to CCITT method
-def alternate_checksum(data):
-
-    return mod_2_div('1111111111111111' + data + '0000000000000000','10001000000100001').lstrip('0')
+    
+    k = len(data)
+    data = data + '0000000000000000'
+    data = xor(data, '1111111111111111'+('0'*k))
+    sol = mod_2_div(data, '10001000000100001')
+    while len(sol) < 16:
+        sol = '0' + sol
+    return (sol == '0001110100001111')
 
 #============================================ UNIT TESTING ===========================================
 
 if __name__ == "__main__":
     test_data = '11aucihP0000000CM7P000000000'
-    checked = alternate_checksum(to_binary_AIS(test_data))
+    checked = create_checksum(to_binary_AIS(test_data))
     print(checked)
-    print(alternate_checksum(to_binary_AIS(test_data)+checked)) #if this is NULL, then a valid checksum was produced
+    print(check_checksum(to_binary_AIS(test_data)+checked))

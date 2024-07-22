@@ -2,7 +2,7 @@
 #Generates a test signal and saves to a .bin file
 
 import pyais
-from AIS.CRC import *
+from AIS.CRC import create_checksum, check_checksum, to_binary_AIS, binary_string_to_bytes
 
 
 def gen_AIS():
@@ -29,12 +29,12 @@ def gen_AIS():
     buffer = b'\x00\x00\x00'
 
     #Apply CRC 16 Checksum
-    checksum = alternate_checksum(to_binary_AIS(data))
+    checksum = create_checksum(to_binary_AIS(data))
     data_and_checksum = binary_string_to_bytes(to_binary_AIS(data)+checksum)
 
     #Checksum Validation
 
-    if alternate_checksum(to_binary_AIS(data)+checksum) != '':
+    if not check_checksum(to_binary_AIS(data)+checksum):
         raise ValueError("Checksum invalid.")
 
     #Combine to form packet
