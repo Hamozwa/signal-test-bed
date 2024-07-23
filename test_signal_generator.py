@@ -11,72 +11,10 @@ from message_info import AIS_message_info
 def gen_AIS(msg_info):
 
     #Use pyais to make NMEA 0183 Message depending on message type
-    match msg_info['msg_type']:
-        case 1:
-            payload = pyais.messages.MessageType1.create(
-                msg_type = msg_info['msg_type'],
-                repeat = msg_info['repeat'],
-                mmsi=msg_info['mmsi'],
-                status = msg_info['status'],
-                turn = msg_info['turn'],
-                speed = msg_info['speed'],
-                accuracy = msg_info['accuracy'],
-                lon = msg_info['lon'],
-                lat = msg_info['lat'],
-                course = msg_info['course'],
-                heading = msg_info['heading'],
-                second = msg_info['second'],
-                maneuver = msg_info['maneuver'],
-                spare_1 = msg_info['spare_1'],
-                raim = msg_info['raim'],
-                radio = msg_info['radio']
-            )
-        case 2:
-            pass
-        case 3:
-            pass
-        case 4:
-            pass
-        case 5:
-            pass
-        case 6:
-            pass
-        case 7:
-            pass
-        case 8:
-            pass
-        case 9:
-            pass
-        case 10:
-            pass
-        case 11:
-            pass
-        case 12:
-            pass
-        case 13:
-            pass
-        case 14:
-            pass
-        case 15:
-            pass
-        case 16:
-            pass
-        case 17:
-            pass
-        case 18:
-            pass
-        case 19:
-            pass
-        case 20:
-            pass
-        case 21:
-            pass
-
-
-    NMEA_Message = pyais.encode.encode_msg(payload)[0]
-
+    payload = pyais.encode.encode_dict(msg_info)[0]
+    print(payload)
     #Extract 168 bit data from NMEA message and convert to 6 bit ASCII
-    data = NMEA_Message.split(",")[5]
+    data = payload.split(",")[5]
     
     #Assign simple variables for transmission packet
     ramp = b'\x00'
@@ -110,4 +48,7 @@ def gen_L_Band():
 if __name__ == "__main__":
     #Save output in file
     with open('output_data.bin','wb') as bin_file:
-        bin_file.write(gen_AIS(AIS_message_info))
+        test_dict = AIS_message_info
+        test_dict['msg_type'] = 23
+        test_dict['txrx'] = 1
+        bin_file.write(gen_AIS(test_dict))
