@@ -1,4 +1,4 @@
-#message_decoder
+#message_parser
 #Reads signal from a file
 
 #=========================================== IMPORTS ============================================
