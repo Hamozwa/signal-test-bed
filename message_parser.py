@@ -4,9 +4,11 @@
 #=========================================== IMPORTS ============================================
 
 import pyais
-from AIS.CRC import bytes_to_binary_string, check_checksum, from_binary_AIS
+import pyais.messages
+from AIS.CRC import bytes_to_binary_string, check_checksum, binary_string_to_bytes
+import bitarray
 
-#======================================= READING FUNCTIONS=======================================
+#======================================= READING FUNCTIONS=======================================  
 
 def read_AIS(message):
     
@@ -14,16 +16,19 @@ def read_AIS(message):
     message_binary = bytes_to_binary_string(message)
     start_flag_index = message_binary.index('01111110')
     data_and_checksum = message_binary[ start_flag_index + 8 : start_flag_index + 192 ]
+    data = data_and_checksum[0:len(data_and_checksum)-16]
 
     #Check Checksum
     if not check_checksum(data_and_checksum):
         raise ValueError("Checksum invalid.")
     
     #Process Payload
-    payload = from_binary_AIS(data_and_checksum[0:168])
-    msg = pyais.decode(b"!AIVDM,1,1,,A,"+str.encode(payload)+b",0*4E")
+    msg_type = int(data[0:6],2)
+    bit_array = bitarray.bitarray()
+    bit_array.frombytes(binary_string_to_bytes(data))
+    msg = pyais.messages.MSG_CLASS[msg_type].from_bitarray(bit_array)
 
-    return msg
+    return str(msg).lstrip("MessageType1(").rstrip(")")
 
 #========================================== UNIT TESTING ========================================
 

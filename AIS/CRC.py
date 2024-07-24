@@ -29,26 +29,6 @@ def to_binary_AIS(data):
 
     return output
 
-#Convert binary back to data assuming six-bit ASCII
-def from_binary_AIS(data):
-
-    output = ''
-
-    #Cycles through each 6 bit grouping
-    for i in range(0, len(data), 6):
-
-        #Convert 6 bit grouping into 6 bit value
-        six_bit_value = int(data[i:i+6], 2)
-
-        #Convert 6 bit value into appropriate ASCII value
-        if six_bit_value >= 32:
-            six_bit_value += 8
-        ascii_value = six_bit_value + 48
-
-        output += chr(ascii_value)
-        
-    return output
-
 def binary_string_to_bytes(binary_string):
 
     #Adds necessary initial zeroes

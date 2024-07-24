@@ -12,9 +12,9 @@ def gen_AIS(msg_info):
 
     #Use pyais to make NMEA 0183 Message depending on message type
     payload = pyais.encode.encode_dict(msg_info)[0]
-    print(payload)
     #Extract 168 bit data from NMEA message and convert to 6 bit ASCII
     data = payload.split(",")[5]
+    print(data)
     
     #Assign simple variables for transmission packet
     ramp = b'\x00'
@@ -49,6 +49,5 @@ if __name__ == "__main__":
     #Save output in file
     with open('output_data.bin','wb') as bin_file:
         test_dict = AIS_message_info
-        test_dict['msg_type'] = 23
-        test_dict['txrx'] = 1
+        test_dict['accuracy'] = 1
         bin_file.write(gen_AIS(test_dict))
