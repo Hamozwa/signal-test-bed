@@ -4,8 +4,7 @@
 #=========================================== IMPORTS ============================================
 
 import pyais
-import pyais.messages
-from AIS.CRC import bytes_to_binary_string, check_checksum, binary_string_to_bytes
+import CRC
 import bitarray
 
 #======================================= READING FUNCTIONS=======================================  
@@ -13,19 +12,19 @@ import bitarray
 def read_AIS(message):
     
     #Convert bytes to binary and extract data and checksum
-    message_binary = bytes_to_binary_string(message)
+    message_binary = CRC.bytes_to_binary_string(message)
     start_flag_index = message_binary.index('01111110')
     data_and_checksum = message_binary[ start_flag_index + 8 : start_flag_index + 192 ]
     data = data_and_checksum[0:len(data_and_checksum)-16]
 
     #Check Checksum
-    if not check_checksum(data_and_checksum):
+    if not CRC.check_AIS_checksum(data_and_checksum):
         raise ValueError("Checksum invalid.")
     
     #Process Payload
     msg_type = int(data[0:6],2)
     bit_array = bitarray.bitarray()
-    bit_array.frombytes(binary_string_to_bytes(data))
+    bit_array.frombytes(CRC.binary_string_to_bytes(data))
     msg = pyais.messages.MSG_CLASS[msg_type].from_bitarray(bit_array)
 
     return str(msg).lstrip("MessageType1(").rstrip(")")

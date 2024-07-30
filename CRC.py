@@ -16,7 +16,6 @@ def to_binary_AIS(data):
         #Input Sanitisation 
         if ascii_value < 48 or ascii_value > 119:
             raise ValueError("Incorrect letter in ASCII code")
-            return
 
         #Convert to 6 bits via AIS method
         six_bit_value = ascii_value - 48
@@ -99,7 +98,7 @@ def ones_complement(data):
 #=================================== ISO/IEC 13239:2002 STANDARD ====================================
 # (In particular, the method outlined in Annex A)
 
-def create_checksum(data):
+def create_AIS_checksum(data):
     
     k = len(data)
     data = data + '0000000000000000'
@@ -109,7 +108,7 @@ def create_checksum(data):
         sol = '0' + sol
     return ones_complement(sol)
 
-def check_checksum(data):
+def check_AIS_checksum(data):
     
     k = len(data)
     data = data + '0000000000000000'
@@ -123,6 +122,6 @@ def check_checksum(data):
 
 if __name__ == "__main__":
     test_data = '11aucihP0000000CM7P000000000'
-    checked = create_checksum(to_binary_AIS(test_data))
+    checked = create_AIS_checksum(to_binary_AIS(test_data))
     print(checked)
-    print(check_checksum(to_binary_AIS(test_data)+checked))
+    print(check_AIS_checksum(to_binary_AIS(test_data)+checked))

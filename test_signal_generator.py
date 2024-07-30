@@ -3,7 +3,7 @@
 
 #=========================================== IMPORTS ============================================
 import pyais
-from AIS import CRC
+import CRC
 import message_info
 
 #==================================== GENERATION FUNCTIONS =======================================
@@ -22,12 +22,12 @@ def gen_AIS(msg_info):
     buffer = b'\x00\x00\x00'
 
     #Apply CRC 16 Checksum
-    checksum = CRC.create_checksum(CRC.to_binary_AIS(data))
+    checksum = CRC.create_AIS_checksum(CRC.to_binary_AIS(data))
     data_and_checksum = CRC.binary_string_to_bytes(CRC.to_binary_AIS(data)+checksum)
 
     #Checksum Validation
 
-    if not CRC.check_checksum(CRC.to_binary_AIS(data)+checksum):
+    if not CRC.check_AIS_checksum(CRC.to_binary_AIS(data)+checksum):
         raise ValueError("Checksum invalid.")
 
     #Combine to form packet
