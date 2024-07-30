@@ -118,3 +118,66 @@ AIS_message_info = {
     'gnss' : 0
 
 }
+
+ADSB_message_info = {
+
+    #Common
+    'DF': 17, #Downlink Format
+    'CA': 0, #Transponder Capability
+    'ICAO' : b'H@\xd6',
+    'TC' : 1, #Type Code
+
+    #1-4 - Aircraft Identification
+    'category' : 0,
+    'callsign' : 'KLM1023 ',
+
+    #9-18, 20-22 - Airborne Position
+    'SS' : 0, #Surveillance State
+    'SAF': 0, #Single Antenna Flag
+    'ALT': 0, #Encoded Altitude
+    'T': 0, #Time
+    'F':0, #CPR Format
+    'LAT-CPR': 0, #Encoded Latitude
+    'LON-CPR': 0, #Encoded Longitude
+    
+    #5-8 - Surface Position
+    'MOV': 0, #Movement
+    'S': 0, #Status for Ground Track
+    'TRK': 0, #Ground Track
+
+    #19 - Airborne Velocity
+    'ST': 0, #Sub-type
+    'IC': 0, #Intent Change Flag
+    'IFR': 0, #IFR Capability Flag
+    'NUCv': 0, #Navigation Uncertainty Category for Velocity
+    'VrSrc': 0, #Source Bit for Vertical Rate
+    'Svr': 0, #Sign Bit for Vertical Rate
+    'VR': 0, #Vertical Rate
+    'SDif': 0, #Sign Bit for GNSS and Baro altitudes difference
+    'dAlt': 0, #Difference between GNSS and Baro difference
+    
+    #ST 1-2
+    'Dew': 0, #Direction for E-W Vel.
+    'Vew': 0, #E-W Vel.
+    'Dns': 0, #Direction for N-S Vel.
+    'Vns': 0, #N-S Vel.
+    #ST 3-4
+    'SH': 0, #Status Bit for Magnetic Heading
+    'HDG': 0, #Magnetic Heading
+    'T': 0, #Airspeed Type (Not Time)
+    'AS': 0, #Airspeed
+
+    #31 - Operation Status
+    'ST': 0, #Sub-type
+    'CC': 0, #Capacity Class Codes
+    'OM': 0, #Operational Mode Codes
+    'Ver': 2, #ADS-B Version Number
+    'NicA': 0, #NIC Supplement - A
+    'NACp': 0, #Navigational Accuracy Category - Position
+    'GVA': 0, #Geometrics Vertical Accuracy
+    'SIL': 0, #Source Integrity Level
+    'BAI/HDG': 0, #Barometric Altitude Integrity/Track Angle or Heading
+    'HRD': 0, #Horizontal Reference Direction
+    'SILs': 0, #SIL Supplement
+
+}
