@@ -118,10 +118,29 @@ def check_AIS_checksum(data):
         sol = '0' + sol
     return (sol == '0001110100001111')
 
+def create_ADSB_checksum(data):
+    data = data + '000000000000000000000000'
+    sol = mod_2_div(data, '1111111111111010000001001')
+    while len(sol) < 24:
+        sol = '0' + sol
+    return sol
+
+def check_ADSB_checksum(data):
+    sol = mod_2_div(data, '1111111111111010000001001')
+    return (sol.lstrip('0') == '')
+
 #============================================ UNIT TESTING ===========================================
 
 if __name__ == "__main__":
-    test_data = '11aucihP0000000CM7P000000000'
-    checked = create_AIS_checksum(to_binary_AIS(test_data))
-    print(checked)
-    print(check_AIS_checksum(to_binary_AIS(test_data)+checked))
+
+    #AIS CRC Test
+    AIS_test_data = '11aucihP0000000CM7P000000000'
+    AIS_CRC= create_AIS_checksum(to_binary_AIS(AIS_test_data))
+    print(AIS_CRC)
+    print(check_AIS_checksum(to_binary_AIS(AIS_test_data)+AIS_CRC))
+
+    #ADSB CRC Test
+    ADSB_test_data = 'A0000B378DB00030A40000'
+    ADSB_CRC = create_ADSB_checksum(bytes_to_binary_string(bytes.fromhex(ADSB_test_data)))
+    print(ADSB_CRC)
+    print(check_ADSB_checksum(bytes_to_binary_string(bytes.fromhex(ADSB_test_data)) + ADSB_CRC))

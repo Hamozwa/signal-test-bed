@@ -47,6 +47,8 @@ def gen_ADSB(msg_info):
     ICAO_bin = CRC.bytes_to_binary_string(ICAO)
     TC_bin = format(TC,'05b')
 
+    preamble_bin = '1010000101000000'
+
     #Create corresponding Extended Squitter Message
     #(Wish there was a pyais equivalent for ADS-B...)
     match TC:
@@ -128,11 +130,21 @@ def gen_ADSB(msg_info):
 
             ME_bin = TC_bin + ST_bin + CC_bin + OM_bin + Ver_bin + NICa_bin + NACp_bin + GVA_bin + SIL_bin + BAI_HDG_bin + HRD_bin + SILs_bin + Reserved
             
-    
-    #TODO: Create CRC for ADS-B
-    PI_bin = '0' * 24
+    data_bin = DF_bin + CA_bin + ICAO_bin + ME_bin
 
-    return DF_bin + CA_bin + ICAO_bin + ME_bin + PI_bin
+    PI_bin = CRC.create_ADSB_checksum(data_bin)
+
+    #Apply PPM (Pulse Position Modulation) and prepend preamble
+    payload = data_bin + PI_bin
+    transmission_packet = ''
+    for num in payload:
+        match num:
+            case '0':
+                transmission_packet += '01'
+            case '1':
+                transmission_packet += '10'
+
+    return CRC.binary_string_to_bytes(preamble_bin + transmission_packet)
 
 def gen_L_Band():
     pass
@@ -143,8 +155,10 @@ def gen_L_Band():
 
 if __name__ == "__main__":
     #Save output in file
+
     with open('output_data.bin','wb') as bin_file:
         test_dict = message_info.AIS_message_info
         test_dict['accuracy'] = 1
         bin_file.write(gen_AIS(test_dict))
+        
     print(gen_ADSB(message_info.ADSB_message_info))
