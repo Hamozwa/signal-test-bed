@@ -95,6 +95,61 @@ def mod_2_div(num,den):
 def ones_complement(data):
     return(xor(data, '1'*len(data)))
 
+#NRZI Encoding/Decoding
+def NRZI_encode(input_bits):
+    encoded ='0'
+    for char in input_bits:
+        encoded += xor(char,encoded[-1])
+    return encoded
+
+def NRZI_decode(input_bits):
+    decoded = ''
+    for i in range(1,len(input_bits)):
+        decoded += xor(input_bits[i-1],input_bits[i])
+    return decoded
+
+#Bit Stuffing/Destuffing
+def bit_stuff(input_bits):
+    one_counter = 0
+
+    for j in range (0,len(input_bits)):
+        if input_bits[j] == '1': #Count how many ones in a row so far
+            one_counter += 1
+        else:
+             one_counter = 0
+
+        if one_counter == 5: #If 5 ones in a row, add a zero
+            input_bits = input_bits[:j+1] + '0' + input_bits[j+1:]
+            one_counter = 0
+
+    return input_bits
+
+def bit_destuff(input_bits):
+    one_counter = 0
+    write_flag = True
+    output_bits = ''
+
+    for bit in input_bits:
+            if bit == '1': #Count how many ones in a row so far
+                    one_counter += 1
+            else:
+                one_counter = 0
+
+            if one_counter == 5: #If 5 ones in a row, set flag to ignore the zero
+                    one_counter = 0
+                    write_flag = False
+
+            if write_flag: #Ignores the zero after 5 ones
+                    output_bits += bit
+            else:
+                    if bit == '1':
+                        #raise ValueError("Bitstuffing not detected in this packet.")
+                        output_bits += bit #for message parsing when the section after the bitstuffed area is also destuffed uninentionally
+                    write_flag = True
+
+    return output_bits
+
+
 #=================================== ISO/IEC 13239:2002 STANDARD ====================================
 # (In particular, the method outlined in Annex A)
 

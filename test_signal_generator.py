@@ -16,22 +16,32 @@ def gen_AIS(msg_info):
     data = payload.split(",")[5]
     
     #Assign simple variables for transmission packet
-    ramp = b'\x00'
-    training_seq = b'\x55\x55\x55'
-    flag = b'\x7E'
-    buffer = b'\x00\x00\x00'
+    ramp_bin = '1111111'
+    training_seq_bin = '010101010101010101010101'
+    flag_bin = '01111110'
 
     #Apply CRC 16 Checksum
-    checksum = CRC.create_AIS_checksum(CRC.to_binary_AIS(data))
-    data_and_checksum = CRC.binary_string_to_bytes(CRC.to_binary_AIS(data)+checksum)
+    checksum_bin = CRC.create_AIS_checksum(CRC.to_binary_AIS(data))
+    data_bin = CRC.to_binary_AIS(data)
 
     #Checksum Validation
 
-    if not CRC.check_AIS_checksum(CRC.to_binary_AIS(data)+checksum):
+    if not CRC.check_AIS_checksum(data_bin+checksum_bin):
         raise ValueError("Checksum invalid.")
 
-    #Combine to form packet
-    return ramp + training_seq + flag + data_and_checksum + flag + buffer
+    #Byte Reversal
+    data_bin = ''.join(data_bin[i:i+8][::-1] for i in range(0, len(data_bin), 8))
+    checksum_bin = checksum_bin[::-1]
+
+    reversed_data_and_checksum_bin = data_bin + checksum_bin
+
+    #Bit stuffing
+    bitstuffed_packet_section = CRC.bit_stuff(reversed_data_and_checksum_bin)
+
+    #Transmission packet Formation
+    main_packet = CRC.NRZI_encode(training_seq_bin + flag_bin + bitstuffed_packet_section + flag_bin)
+
+    return CRC.binary_string_to_bytes(ramp_bin + main_packet)
 
 
 def gen_ADSB(msg_info):
@@ -159,6 +169,7 @@ if __name__ == "__main__":
     with open('output_data.bin','wb') as bin_file:
         test_dict = message_info.AIS_message_info
         test_dict['accuracy'] = 1
+        print(gen_AIS(test_dict))
         bin_file.write(gen_AIS(test_dict))
-        
+
     print(gen_ADSB(message_info.ADSB_message_info))
