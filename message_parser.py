@@ -10,7 +10,6 @@ import bitarray
 #======================================= READING FUNCTIONS=======================================  
 
 def read_AIS(message):
-    message = b'\xfefffT?\x80F\x98/\xff\xff\xe0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16\xbaT'
     #Extract data and checksum
     message_bin = CRC.bytes_to_binary_string(message)
     
@@ -45,7 +44,6 @@ def read_AIS(message):
 
 #========================================== UNIT TESTING ========================================
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     #Read output from file
     #with open('input_data.bin','rb') as file:
-    print(read_AIS(''))

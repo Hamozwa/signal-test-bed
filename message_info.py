@@ -192,10 +192,9 @@ VDES_message_info = {
     'session_id': 0,
     'source_id': 0,
     'data_count': 0,
-    #TODO: add AIS encapsulation
 
     #1 - Scheduled Broadcast Message
-    'ASM-identifier': 0,
+    'ASM_identifier': 0,
     'communication_state': 0,
     'binary_data': '',
 

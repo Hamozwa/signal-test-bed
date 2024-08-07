@@ -236,6 +236,14 @@ def gen_VDES(*arg):
 
     return payload_bin
 
+    #TODO: Implement Bit Packing
+
+    #TODO: Implement CRC32
+
+    #TODO: Implement FEC encoding
+
+    #TODO: Implement Bit-Scrambling
+
 #======================================= UNIT TESTING ===========================================
 
 if __name__ == "__main__":

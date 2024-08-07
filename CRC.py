@@ -150,13 +150,13 @@ def bit_destuff(input_bits):
     return output_bits
 
 
-#=================================== ISO/IEC 13239:2002 STANDARD ====================================
-# (In particular, the method outlined in Annex A)
+#========================================= CRC FUNCTIONS =============================================
 
+#AIS method fron ISO/IEC 13239:2002 STANDARD (In particular, the method outlined in Annex A)
 def create_AIS_checksum(data):
     
     k = len(data)
-    data = data + '0000000000000000'
+    data = data + '0'*16
     data = xor(data, '1111111111111111'+('0'*k))
     sol = mod_2_div(data, '10001000000100001')
     while len(sol) < 16:
@@ -166,15 +166,16 @@ def create_AIS_checksum(data):
 def check_AIS_checksum(data):
     
     k = len(data)
-    data = data + '0000000000000000'
-    data = xor(data, '1111111111111111'+('0'*k))
+    data = data + '0' * 16
+    data = xor(data, ('1'*16)+('0'*k))
     sol = mod_2_div(data, '10001000000100001')
     while len(sol) < 16:
         sol = '0' + sol
     return (sol == '0001110100001111')
 
+#ADSB from https://mode-s.org/decode/
 def create_ADSB_checksum(data):
-    data = data + '000000000000000000000000'
+    data = data + '0' * 24
     sol = mod_2_div(data, '1111111111111010000001001')
     while len(sol) < 24:
         sol = '0' + sol
@@ -184,18 +185,54 @@ def check_ADSB_checksum(data):
     sol = mod_2_div(data, '1111111111111010000001001')
     return (sol.lstrip('0') == '')
 
+#VDES Methods outlined in ITU-R M.2092-1
+def create_VDES_32_checksum(data):
+    data += '0' * 32
+    sol = mod_2_div(data, '100000100110000010001110110110111')
+    while len(sol) < 32:
+        sol = '0' + sol
+    return sol
+
+def check_VDES_32_checksum(data):
+    sol = mod_2_div(data, '100000100110000010001110110110111')
+    return (sol.lstrip('0') == '')
+
+def create_VDES_16_checksum(data):
+    data += '0' * 16
+    sol = mod_2_div(data, '11000000000000101')
+    while len(sol) < 16:
+        sol = '0' + sol
+    return sol
+
+def check_VDES_16_checksum(data):
+    sol = mod_2_div(data, '11000000000000101')
+    return (sol.lstrip('0') == '')
+
+
 #============================================ UNIT TESTING ===========================================
 
 if __name__ == "__main__":
 
-    #AIS CRC Test
+    print('AIS CRC Test')
     AIS_test_data = '11aucihP0000000CM7P000000000'
     AIS_CRC= create_AIS_checksum(to_binary_AIS(AIS_test_data))
     print(AIS_CRC)
     print(check_AIS_checksum(to_binary_AIS(AIS_test_data)+AIS_CRC))
 
-    #ADSB CRC Test
+    print('ADSB CRC Test')
     ADSB_test_data = 'A0000B378DB00030A40000'
     ADSB_CRC = create_ADSB_checksum(bytes_to_binary_string(bytes.fromhex(ADSB_test_data)))
     print(ADSB_CRC)
     print(check_ADSB_checksum(bytes_to_binary_string(bytes.fromhex(ADSB_test_data)) + ADSB_CRC))
+
+    print('VDES 32 CRC Test')
+    VDES_32_test_data = '10010100010101001010101001011110010110011001'
+    VDES_32_CRC = create_VDES_32_checksum(VDES_32_test_data)
+    print(VDES_32_CRC)
+    print(check_VDES_32_checksum(VDES_32_test_data + VDES_32_CRC))
+
+    print('VDES 16 CRC Test')
+    VDES_16_test_data = '10010100010101001010101001011110010110011001'
+    VDES_16_CRC = create_VDES_16_checksum(VDES_16_test_data)
+    print(VDES_16_CRC)
+    print(check_VDES_16_checksum(VDES_16_test_data + VDES_16_CRC))
