@@ -25,7 +25,6 @@ def gen_AIS(msg_info):
     data_bin = CRC.to_binary_AIS(data)
 
     #Checksum Validation
-
     if not CRC.check_AIS_checksum(data_bin+checksum_bin):
         raise ValueError("Checksum invalid.")
 
@@ -156,20 +155,98 @@ def gen_ADSB(msg_info):
 
     return CRC.binary_string_to_bytes(preamble_bin + transmission_packet)
 
-def gen_L_Band():
-    pass
+def gen_VDES(*arg):
 
-#etc...
+    #Extract arguments
+    vdes_info = arg[0]
+    if len(arg) > 1:
+        ais_info = arg[1]
+    else:
+        if vdes_info['message_id'] == 0:
+            raise ValueError('AIS info not provided for VDES message type 0.')
+
+    #Initialise common fields
+    msg_id = vdes_info['message_id']
+    msg_id_bin = format(msg_id,'04b')
+    retransmit_flag_bin = format(vdes_info['retransmit_flag'],'01b')
+    repeat_indicator_bin = format(vdes_info['repeat_indicator'],'02b')
+    session_id_bin = format(vdes_info['session_id'],'06b')
+    source_id_bin = format(vdes_info['source_id'],'032b')
+
+    #Construct payload from function input
+    match msg_id:
+
+        case 0: #Broadcast AIS ASM Message
+            data_count_bin = format(vdes_info['data_count'],'011b')
+            ais_bin = CRC.bytes_to_binary_string(gen_AIS(ais_info))[32:]
+
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + data_count_bin + ais_bin
+        
+        case 1: #Scheduled Broadcast message
+            data_count_bin = format(vdes_info['data_count'],'011b')
+            ASM_identifier_bin = format(vdes_info['ASM_identifier'],'016b')
+            binary_data = vdes_info['binary_data']
+            communication_state_bin = format(vdes_info['communication_state'],'038b')
+            spare_bits = '00'
+
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + data_count_bin + ASM_identifier_bin + binary_data + communication_state_bin + spare_bits
+
+        case 2: #Broadcast Message
+            data_count_bin = format(vdes_info['data_count'],'011b')
+            ASM_identifier_bin = format(vdes_info['ASM_identifier'],'016b')
+            binary_data = vdes_info['binary_data']
+
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + data_count_bin + ASM_identifier_bin + binary_data
+
+        case 3: #Scheduled Individual Addressed Message
+            destination_id_bin = format(vdes_info['destination_id'],'032b')
+            data_count_bin = format(vdes_info['data_count'],'011b')
+            ASM_identifier_bin = format(vdes_info['ASM_identifier'],'016b')
+            binary_data = vdes_info['binary_data']
+            communication_state_bin = format(vdes_info['communication_state'],'038b')
+            spare_bits = '00'
+
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + destination_id_bin + data_count_bin + ASM_identifier_bin + binary_data + communication_state_bin + spare_bits
+
+        case 4: #Individual Addressed Message
+            destination_id_bin = format(vdes_info['destination_id'],'032b')
+            data_count_bin = format(vdes_info['data_count'],'011b')
+            ASM_identifier_bin = format(vdes_info['ASM_identifier'],'016b')
+            binary_data = vdes_info['binary_data']
+            
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + destination_id_bin + data_count_bin + ASM_identifier_bin + binary_data
+
+        case 5: #Acknowledgement Message
+            destination_id_bin = format(vdes_info['destination_id'],'032b')
+            ACK_NACK_mask_bin = format(vdes_info['ACK_NACK_mask'],'016b')
+
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + destination_id_bin + ACK_NACK_mask_bin
+
+        case 6: #Geographical Multicast Message
+            longitude_1_bin = format(vdes_info['longitude_1'],'018b')
+            latitude_1_bin = format(vdes_info['latitude_1'],'017b')
+            longitude_2_bin = format(vdes_info['longitude_2'],'018b')
+            latitude_2_bin = format(vdes_info['latitude_2'],'017b')
+            data_count_bin = format(vdes_info['data_count'],'011b')
+            spare_bits = '00'
+            ASM_identifier_bin = format(vdes_info['ASM_identifier'],'016b')
+            binary_data = vdes_info['binary_data']
+
+            payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + longitude_1_bin + latitude_1_bin + longitude_2_bin + latitude_2_bin +data_count_bin + spare_bits + ASM_identifier_bin + binary_data
+
+    return payload_bin
 
 #======================================= UNIT TESTING ===========================================
 
 if __name__ == "__main__":
     #Save output in file
 
-    with open('output_data.bin','wb') as bin_file:
-        test_dict = message_info.AIS_message_info
-        test_dict['accuracy'] = 1
-        print(gen_AIS(test_dict))
-        bin_file.write(gen_AIS(test_dict))
+    #with open('output_data.bin','wb') as bin_file:
+    #    test_dict = message_info.AIS_message_info
+    #    test_dict['accuracy'] = 1
+    #    print(gen_AIS(test_dict))
+    #    bin_file.write(gen_AIS(test_dict))
 
-    print(gen_ADSB(message_info.ADSB_message_info))
+    #print(gen_ADSB(message_info.ADSB_message_info))
+
+    print(len(gen_VDES(message_info.VDES_message_info,message_info.AIS_message_info)))

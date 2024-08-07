@@ -181,3 +181,41 @@ ADSB_message_info = {
     'SILs': 0, #SIL Supplement
 
 }
+
+VDES_message_info = {
+    'message_id': 0,
+
+    # Message-specific Fields (no repeats)
+    #0 - Broadcast AIS ASM Message (supports AIS messages 6,8,12,14,21,25,26)
+    'retransmit_flag': 0,
+    'repeat_indicator': 0,
+    'session_id': 0,
+    'source_id': 0,
+    'data_count': 0,
+    #TODO: add AIS encapsulation
+
+    #1 - Scheduled Broadcast Message
+    'ASM-identifier': 0,
+    'communication_state': 0,
+    'binary_data': '',
+
+    #2 - Broadcast Message
+
+    #3 - Scheduled Individual Addressed Message
+    'destination_id': 0,
+
+    #4 - Individual Addressed Message
+
+    #5 - Acknowledgement Message
+    'ACK_NACK_mask': 0,
+    'coding_rate_adaptation_request': 0,
+    'channel_quality_indicator': 0,
+
+
+    #6 - Geougraphical Multicast Message
+    'longitude_1': 0,
+    'latitude_1': 0,
+    'longitude_2': 0,
+    'latitude_2': 0,
+    
+}
