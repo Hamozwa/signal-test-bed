@@ -233,16 +233,18 @@ def gen_VDES(*arg):
             binary_data = vdes_info['binary_data']
 
             payload_bin = msg_id_bin + retransmit_flag_bin + repeat_indicator_bin + session_id_bin + source_id_bin + longitude_1_bin + latitude_1_bin + longitude_2_bin + latitude_2_bin +data_count_bin + spare_bits + ASM_identifier_bin + binary_data
-
-    return payload_bin
-
-    #TODO: Implement Bit Packing
+    
+    #Pad data to fill 256 bit space
+    while len(payload_bin) < 256:
+        payload_bin += '0'
 
     #TODO: Implement CRC32
 
     #TODO: Implement FEC encoding
 
     #TODO: Implement Bit-Scrambling
+
+    return payload_bin
 
 #======================================= UNIT TESTING ===========================================
 
