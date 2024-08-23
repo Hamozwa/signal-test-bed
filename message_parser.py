@@ -211,6 +211,116 @@ def read_ADSB(message):
 
     return msg_info
 
+def read_VDES(message):
+    #Convert to Binary
+    message_bin = CRC.bytes_to_binary_string(message)
+
+    #TODO: Implement reverse of things missing in test_signal_generator.py
+
+    payload_bin = message_bin #CHANGE THIS WHEN THE REST IS IMPLEMENTED
+
+    #Create dictionary to store infromation
+    msg_info = {}
+
+    #Extract Common Fields
+    msg_id_bin = payload_bin[0:4]
+    retransmit_flag_bin = payload_bin[4]
+    repeat_indicator_bin = payload_bin[5:7]
+    session_id_bin = payload_bin[7:13]
+    source_id_bin = payload_bin[13:45]
+
+    msg_info['msg_id'] = int(msg_id_bin, 2)
+    msg_info['retransmit_flag'] = int(retransmit_flag_bin, 2)
+    msg_info['repeat_indicator'] = int(repeat_indicator_bin, 2)
+    msg_info['session_id'] = int(session_id_bin, 2)
+    msg_info['source_id'] = int(source_id_bin, 2)
+
+    #Extract type-specific fields
+    remaining_bin = payload_bin[45:]
+
+    match msg_info['msg_id']:
+        
+        case 0: #Broadcast AIS ASM Message
+            data_count_bin = remaining_bin[0:11]
+            ais_bin = remaining_bin[11:]
+
+            msg_info['data_count'] = int(data_count_bin, 2)
+            msg_info['AIS_info']= CRC.binary_string_to_bytes(read_AIS(ais_bin))
+        
+        case 1: #Scheduled Broadcast message
+            data_count_bin = remaining_bin[0:11]
+            ASM_identifier_bin = remaining_bin[11:27]
+            binary_data = remaining_bin[27:-39]
+            communication_state_bin = remaining_bin[-39:-2]
+
+            msg_info['data_count'] = int(data_count_bin, 2)
+            msg_info['ASM_identifier'] = int(ASM_identifier_bin, 2)
+            msg_info['binary_data'] = int(binary_data, 2)
+            msg_info['communication_state'] = int(communication_state_bin, 2)
+
+        case 2: #Broadcast Message
+            data_count_bin = remaining_bin[0:11]
+            ASM_identifier_bin = remaining_bin[11:27]
+            binary_data = remaining_bin[27:]
+
+            msg_info['data_count'] = int(data_count_bin, 2)
+            msg_info['ASM_identifier'] = int(ASM_identifier_bin, 2)
+            msg_info['binary_data'] = int(binary_data, 2)
+
+        case 3: #Scheduled Individual Addressed Message
+            destination_id_bin = remaining_bin[0:32]
+            data_count_bin = remaining_bin[32:43]
+            ASM_identifier_bin = remaining_bin[43:59]
+            binary_data = remaining_bin[27:-39]
+            communication_state_bin = remaining_bin[-39:-2]
+
+            msg_info['destination_id'] = int(destination_id_bin, 2)
+            msg_info['data_count'] = int(data_count_bin, 2)
+            msg_info['ASM_identifier'] = int(ASM_identifier_bin, 2)
+            msg_info['binary_data'] = int(binary_data, 2)
+            msg_info['communication_state'] = int(communication_state_bin, 2)
+          
+        case 4: #Individual Addressed Message
+            destination_id_bin = remaining_bin[0:32]
+            data_count_bin = remaining_bin[32:43]
+            ASM_identifier_bin = remaining_bin[43:59]
+            binary_data = remaining_bin[59:]
+            
+            msg_info['destination_id'] = int(destination_id_bin, 2)
+            msg_info['data_count'] = int(data_count_bin, 2)
+            msg_info['ASM_identifier'] = int(ASM_identifier_bin, 2)
+            msg_info['binary_data'] = int(binary_data, 2)
+
+        case 5: #Acknowledgement Message
+            destination_id_bin = remaining_bin[0:32]
+            ACK_NACK_mask_bin = remaining_bin[32:48]
+
+            msg_info['destination_id'] = int(destination_id_bin, 2)
+            msg_info['ACK_NACK_mask'] = int(ACK_NACK_mask_bin, 2)
+            msg_info['binary_data'] = int(binary_data, 2)
+
+
+        case 6: #Geographical Multicast Message
+            longitude_1_bin = remaining_bin[0:18]
+            latitude_1_bin = remaining_bin[18:35]
+            longitude_2_bin = remaining_bin[35:53]
+            latitude_2_bin = remaining_bin[53:70]
+            data_count_bin = remaining_bin[70:81]
+            #Two spare bits..
+            ASM_identifier_bin = remaining_bin[83:99]
+            binary_data = remaining_bin[99:]
+
+            msg_info['longitude_1'] = int(longitude_1_bin, 2)
+            msg_info['latitude_1'] = int(latitude_1_bin, 2)
+            msg_info['longitude_2'] = int(longitude_2_bin, 2)
+            msg_info['latitude_2'] = int(latitude_2_bin, 2)
+            msg_info['data_count'] = int(data_count_bin, 2)
+            msg_info['ASM_identifier'] = int(ASM_identifier_bin, 2)
+            msg_info['binary_data'] = int(binary_data, 2)
+
+    return msg_info
+
+            
 
 #========================================== UNIT TESTING ========================================
 
