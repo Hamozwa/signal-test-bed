@@ -7,6 +7,9 @@ import message_info as msg_template
 
 import tkinter as tk
 
+import AIS.AIS_Tx
+import AIS.AIS_Rx
+
 #Create input field with label (and default value?)
 def input_field(parent, field_name, field_row, field_column, default_value):
     # Create label
@@ -64,6 +67,8 @@ def send_AIS():
         #Generate test signal
         with open('output_data.bin','wb') as bin_file:
             bin_file.write(sig_gen.gen_AIS(msg_info))
+        
+        AIS.AIS_Tx.main() #Comment this line to only create the message file
 
     submit_button = tk.Button(func_window, height=2, width=30, text="Submit", command=get_inputs)
     submit_button.grid(row=max_inputs, columnspan=8)
@@ -76,7 +81,10 @@ def send_AIS():
     return_button.grid(row=max_inputs+1, columnspan=8)
 
     func_window.mainloop()
-    
+
+def receive_AIS():
+    pass
+
 def main_window():
     global func_picker
 
@@ -92,7 +100,7 @@ def main_window():
 
     #Function buttons
     tk.Button(func_picker, height=2, width=30, text ="Send AIS signal", command=send_AIS).pack()
-    tk.Button(func_picker,height=2, width=30, text="Receive AIS signal").pack()
+    tk.Button(func_picker,height=2, width=30, text="Receive AIS signal", command=receive_AIS).pack()
 
     func_picker.mainloop() 
 

@@ -6,7 +6,6 @@
 import pyais
 import CRC
 import bitarray
-import message_info
 
 #======================================= READING FUNCTIONS=======================================  
 
@@ -324,6 +323,7 @@ def read_VDES(message):
 
 #========================================== UNIT TESTING ========================================
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
     #Read output from file
-    #with open('input_data.bin','rb') as file:
+    with open('input_data.bin','rb') as file:
+        print(read_VDES(file.read()))
