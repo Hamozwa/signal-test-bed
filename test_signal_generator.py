@@ -68,7 +68,7 @@ def gen_ADSB(msg_info):
 
             for char in msg_info['callsign']:
                 a = format(ord(char), '06b')
-                ME_bin += a[len(a)-6:len(a)]
+                ME_bin += a[-6:]
         
         case TC if ((9 <= TC <= 18) | (20 <= TC <= 22)): #Airborne Position
             SS_bin = format(msg_info['SS'],'02b')
@@ -251,12 +251,12 @@ def gen_VDES(*arg):
 if __name__ == "__main__":
     #Save output in file
 
-    with open('output_data.bin','wb') as bin_file:
-        test_dict = message_info.AIS_message_info
-        test_dict['accuracy'] = 1
-        print(gen_AIS(test_dict))
-        bin_file.write(gen_AIS(test_dict))
+    #with open('output_data.bin','wb') as bin_file:
+    #    test_dict = message_info.AIS_message_info
+    #    test_dict['accuracy'] = 1
+    #    print(gen_AIS(test_dict))
+    #    bin_file.write(gen_AIS(test_dict))
 
-    #print(gen_ADSB(message_info.ADSB_message_info))
+    print(gen_ADSB(message_info.ADSB_message_info))
 
-    print(len(gen_VDES(message_info.VDES_message_info,message_info.AIS_message_info)))
+    #print(len(gen_VDES(message_info.VDES_message_info,message_info.AIS_message_info)))
