@@ -68,7 +68,7 @@ def send_AIS():
         with open('output_data.bin','wb') as bin_file:
             bin_file.write(sig_gen.gen_AIS(msg_info))
         
-        AIS.AIS_Tx.main() #Comment this line to only create the message file
+        AIS.AIS_Tx.main() #Comment this line to only create the message file 'output.bin'
 
     submit_button = tk.Button(func_window, height=2, width=30, text="Submit", command=get_inputs)
     submit_button.grid(row=max_inputs, columnspan=8)
@@ -83,7 +83,27 @@ def send_AIS():
     func_window.mainloop()
 
 def receive_AIS():
-    pass
+    
+    func_picker.destroy()
+
+    #Create variable input window
+    func_window = tk.Tk()
+    func_window.title("Receive AIS Signal")
+    func_window.geometry('820x600')
+
+    info_text = tk.Label(func_window, height = 30, width = 600)
+    info_text.pack()
+
+    def parse_signal():
+        AIS.AIS_Rx.main() #Comment this to use already stored file 'input.bin'
+        with open('input_data.bin','rb') as file:
+            info = sig_par.read_AIS(file.read())
+            info_text.config(text=info)
+
+    receive_button = tk.Button(func_window, height=2, width=30, text="Receive", command=parse_signal)
+    receive_button.pack()
+
+    func_window.mainloop()
 
 def main_window():
     global func_picker
