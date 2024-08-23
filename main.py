@@ -62,7 +62,8 @@ def send_AIS():
             row += 1
         
         #Generate test signal
-        sig_gen.gen_AIS(msg_info)
+        with open('output_data.bin','wb') as bin_file:
+            bin_file.write(sig_gen.gen_AIS(msg_info))
 
     submit_button = tk.Button(func_window, height=2, width=30, text="Submit", command=get_inputs)
     submit_button.grid(row=max_inputs, columnspan=8)
